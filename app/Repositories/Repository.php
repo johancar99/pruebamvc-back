@@ -145,6 +145,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function getModel()
     {
+        if(!$this->model){
+            $this->model = $this->getNewModel();
+        }
         return $this->model;
     }
 
