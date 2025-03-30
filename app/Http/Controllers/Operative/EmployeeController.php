@@ -120,10 +120,6 @@ class EmployeeController extends Controller
                 throw new \Exception('Empleado no encontrado', 404);
             }
 
-            if (isset($data['password'])) {
-                $data['password'] = bcrypt($data['password']);
-            }
-
             $new_employee = $employee->getRepository()->setUser(Auth::user())->update($data)->getModel();
             return [
                 'data' => $new_employee,
@@ -133,6 +129,34 @@ class EmployeeController extends Controller
         }, [
             'state' => false,
             'error' => 'Error al actualizar el empleado'
+        ]);
+    }
+
+    // Actualizar el estado de un empleado
+    public function updateAccess(Request $request, $id)
+    {
+        return ControllerWrapper::execApiResponse(function () use ($request, $id) {
+            // Validación de datos (solo se actualizan los campos que se reciben)
+            $data = $request->validate([
+                'access'      => 'required|boolean',
+            ]);
+
+            $employee = $this->employee_repository->findAndGet($id);
+            if (!$employee) {
+                throw new \Exception('Empleado no encontrado', 404);
+            }
+
+            $new_employee = $employee->getRepository()->setUser(Auth::user())->update([
+                "access" => !$data["access"]
+            ])->getModel();
+            return [
+                'data' => $new_employee,
+                'message' => 'Estado del Empleado actualizado exitosamente',
+                'code' => 200
+            ];
+        }, [
+            'state' => false,
+            'error' => 'Error al actualizar el estado del empleado'
         ]);
     }
 

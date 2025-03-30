@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Route;
 // Ruta pública para login
 Route::post('login', [AuthController::class, 'login']);
 
+Route::group(['prefix' => 'entries'], function () {
+    Route::post('/', [\App\Http\Controllers\Operative\EmployeeEntryController::class, 'store']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
@@ -36,12 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::put('{id}', [EmployeeController::class, 'update']); // Ruta para actualizar un empleado
 
-        Route::delete('{id}', [EmployeeController::class, 'destroy']); // Ruta para eliminar un empleado
+        Route::put('/update-access/{id}', [EmployeeController::class, 'updateAccess']); // Ruta para actualizar el estado de un empleado
 
-        Route::post('/import', [EmployeeController::class, 'import']); // Ruta para importar  empleados
+        Route::delete('{id}', [EmployeeController::class, 'destroy']); // Ruta para eliminar un emplead
     });
 
-    Route::group(['prefix' => 'entries'], function () {
-        Route::post('/', [\App\Http\Controllers\Operative\EmployeeEntryController::class, 'store']);
-    });
 });

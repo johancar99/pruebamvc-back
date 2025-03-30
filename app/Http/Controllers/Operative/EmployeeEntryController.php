@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Operative;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerWrapper;
+use App\Models\Operative\EmployeeEntry;
 use App\Repositories\Operative\EmployeeEntryRepository;
 use App\Repositories\Operative\EmployeeRepository;
 use Illuminate\Http\Request;
@@ -38,11 +39,11 @@ class EmployeeEntryController extends Controller
 
             $wasSuccessful = $employee->access;
 
-            $employee_entry = $this->employee_entry_repository->setUser(Auth::user())->store([
+            $employee_entry = EmployeeEntry::create([
                 'employee_id' => $employee->id,
                 'entry_time' => Carbon::now(),
                 'was_successful' => $wasSuccessful,
-            ])->getModel();
+            ]);
 
             // Devolver el empleado creado
             return [
